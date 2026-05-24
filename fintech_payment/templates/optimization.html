@@ -1,0 +1,11 @@
+<h1>Transaction Report</h1>
+<p>Check the SQL tab in the Debug Toolbar!</p>
+<ul>
+    {% for tx in transactions %}
+        <li>
+            User: {{ tx.sender.user.username }} | 
+            Amount: ${{ tx.amount }} | 
+            Merchant: {{ tx.merchant.name|default:"P2P" }}
+        </li>
+    {% endfor %}
+</ul>
