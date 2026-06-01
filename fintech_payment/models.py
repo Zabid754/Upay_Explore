@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q, CheckConstraint
 
 
-# Create your models here.
-
 # 1. Custom Manager to filter active accounts only
 class ActiveAccountManager(models.Manager):
     def get_queryset(self):
@@ -25,7 +23,12 @@ class Account(models.Model):
     class Meta:
         indexes = [models.Index(fields=['account_number', 'status'])]
         constraints = [
-            CheckConstraint(check=Q(balance__gte=0), name="balance_not_negative")
+            # FIXED: Changed 'check' to 'condition' for Django 5.0/6.0 compatibility
+            CheckConstraint(
+                condition=Q(balance__gte=0), 
+                name="balance_not_negative",
+                violation_error_message="Transaction failed: Account balance cannot go below zero."
+            )
         ]
 
     def __str__(self):
@@ -36,6 +39,9 @@ class Merchant(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=50)
     trust_score = models.IntegerField(default=100)
+
+    def __str__(self):
+        return self.name
 
 # 4. Transaction Model
 class Transaction(models.Model):
@@ -55,3 +61,6 @@ class Card(models.Model):
     card_number = models.CharField(max_length=16, unique=True)
     expiry_date = models.DateField()
     is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"Card {self.card_number} ({self.account.user.username})"
