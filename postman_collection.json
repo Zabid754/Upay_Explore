@@ -1,0 +1,138 @@
+{
+  "info": {
+    "_postman_id": "673443c4-0747-42a7-9888-5639209c1d0f",
+    "name": "Django Drf Views",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41545898"
+  },
+  "item": [
+    {
+      "name": "api/accounts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/accounts/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "accounts",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/accounts/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/accounts/1/freeze",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/accounts/1/freeze/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "accounts",
+            "1",
+            "freeze",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "accounts/1/statement/",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/accounts/1/statement/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "accounts",
+            "1",
+            "statement",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "transactions/1/reverse/",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/transactions/1/reverse/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "transactions",
+            "1",
+            "reverse",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "i-zabid",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "i-zabid",
+        "type": "string"
+      }
+    ]
+  }
+}
