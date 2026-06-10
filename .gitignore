@@ -1,0 +1,61 @@
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# =========================
+# Virtual environment
+# =========================
+venv/
+env/
+.venv/
+ENV/
+
+# =========================
+# Django stuff
+# =========================
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Media & static files (if locally generated)
+media/
+staticfiles/
+
+# Migrations (ONLY if you reset DB often in dev — otherwise usually NOT ignored)
+# */migrations/*.py
+# */migrations/*.pyc
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDE / Editor files
+# =========================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Testing / coverage
+# =========================
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+
