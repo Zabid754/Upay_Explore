@@ -15,4 +15,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = ['id', 'wallet', 'tx_type', 'amount', 'balance_after', 'timestamp']
 
 class ExchangeRequestSerializer(serializers.Serializer):
+    receiver_username = serializers.CharField()
+    from_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
+    to_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
     amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
