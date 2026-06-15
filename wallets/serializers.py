@@ -19,3 +19,9 @@ class ExchangeRequestSerializer(serializers.Serializer):
     from_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
     to_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
     amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
+
+class WalletListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ['id', 'currency', 'balance']
+

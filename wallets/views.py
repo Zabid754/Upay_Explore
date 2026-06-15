@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from django.db import transaction
 from decimal import Decimal
 from .models import Wallet, Transaction
-from .serializers import WalletSerializer, TransactionSerializer, ExchangeRequestSerializer
+from .serializers import WalletSerializer, TransactionSerializer, ExchangeRequestSerializer, WalletListSerializer
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -226,3 +226,63 @@ class WalletDetailAPIView(APIView):
         wallet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
+# class WalletStatementAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, pk):
+#         wallet = get_object_or_404(Wallet, pk=pk, user=request.user)
+#         transactions = Transaction.objects.filter(wallet=wallet).order_by('-timestamp')
+#         transaction_data = TransactionSerializer(transactions, many=True).data
+#         return Response({
+#             "statement_for": f"{wallet.currency} Account (ID: {wallet.id})",
+#             "current_balance": wallet.balance,
+#             "is_frozen": wallet.is_frozen,
+#             "transactions": transaction_data
+#         }, status=status.HTTP_200_OK)
+
+class WalletStatementAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk):
+        wallet = get_object_or_404(Wallet, pk=pk, user=request.user)
+        transactions = Transaction.objects.filter(wallet=wallet).order_by('-timestamp')
+        
+        wallet_data = WalletSerializer(wallet).data 
+        transaction_data = TransactionSerializer(transactions, many=True).data
+        
+        return Response({
+            "account_details": wallet_data, 
+            "transactions": transaction_data
+        }, status=status.HTTP_200_OK)
+    
+
+class WalletViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        return Wallet.objects.filter(user=self.request.user)
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return WalletListSerializer
+        return WalletSerializer 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    @action(detail=True, methods=['post'])
+    def freeze(self, request, pk=None):
+        wallet = self.get_object() 
+        wallet.is_frozen = True
+        wallet.save()
+        return Response({"status": f"{wallet.currency} wallet is now frozen"}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def statement(self, request, pk=None):
+        wallet = self.get_object()
+        transactions = Transaction.objects.filter(wallet=wallet).order_by('-timestamp')
+        
+        wallet_data = WalletSerializer(wallet).data
+        transaction_data = TransactionSerializer(transactions, many=True).data
+        
+        return Response({
+            "account_info": wallet_data,
+            "ledger": transaction_data
+        }, status=status.HTTP_200_OK)
