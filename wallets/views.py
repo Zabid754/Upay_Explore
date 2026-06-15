@@ -15,8 +15,11 @@ from django.contrib.auth.models import User
 
 
 def perform_exchange(sender, receiver_username, from_curr, to_curr, amount):
+    amount = Decimal(str(amount))
+    
     USD_TO_BDT_RATE = Decimal('117.50')
     BDT_TO_USD_RATE = Decimal('0.0085') 
+    
     if from_curr == to_curr:
         rate = Decimal('1.0') 
     elif from_curr == 'USD' and to_curr == 'BDT':
@@ -31,16 +34,19 @@ def perform_exchange(sender, receiver_username, from_curr, to_curr, amount):
 
         with transaction.atomic():
             source_wallet = Wallet.objects.select_for_update().get(user=sender, currency=from_curr)
+            current_source_balance = Decimal(str(source_wallet.balance))
             
-            if source_wallet.balance < amount:
+            if current_source_balance < amount:
                 return {"error": f"Insufficient {from_curr} balance", "status": 400}
 
             dest_wallet, _ = Wallet.objects.get_or_create(user=receiver, currency=to_curr)
+            current_dest_balance = Decimal(str(dest_wallet.balance))
 
             converted_amount = amount * rate
 
-            source_wallet.balance -= amount
-            dest_wallet.balance += converted_amount
+            source_wallet.balance = current_source_balance - amount
+            dest_wallet.balance = current_dest_balance + converted_amount
+
             source_wallet.save()
             dest_wallet.save()
 
