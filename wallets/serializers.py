@@ -43,6 +43,11 @@ class WalletSerializer(serializers.ModelSerializer):
     def get_transaction_count(self, obj):
         return obj.transactions.count()
     
+class WalletListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ['id', 'currency', 'balance']
+    
 class TransactionListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         return super().to_representation(data)
@@ -65,23 +70,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         representation['is_large_transaction'] = abs(instance.amount) > 1000
         return representation
     
-
-class ExchangeRequestSerializer(serializers.Serializer):
-    receiver_username = serializers.CharField()
-    from_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
-    to_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
-    amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
-
-    def validate(self, data):
-        if data['from_currency'] == data['to_currency']:
-            raise serializers.ValidationError("Source and target currencies must be different.")
-        return data
-
-class WalletListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Wallet
-        fields = ['id', 'currency', 'balance']
-
 class TransactionCreateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     currency = serializers.ChoiceField(choices=['USD', 'BDT'], write_only=True)
@@ -98,5 +86,20 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
         wallet, _ = Wallet.objects.get_or_create(user=user, currency=currency)
         
         return Transaction.objects.create(wallet=wallet, **validated_data, balance_after=wallet.balance)
+
+class ExchangeRequestSerializer(serializers.Serializer):
+    receiver_username = serializers.CharField()
+    from_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
+    to_currency = serializers.ChoiceField(choices=['USD', 'BDT'])
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
+
+    def validate(self, data):
+        if data['from_currency'] == data['to_currency']:
+            raise serializers.ValidationError("Source and target currencies must be different.")
+        return data
+
+
+
+
     
 
